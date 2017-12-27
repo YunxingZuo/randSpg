@@ -57,6 +57,22 @@ typedef std::vector<wyckPos> similarWyckPositions;
 struct similarWyckPosAndNumToChoose {
   uint numToChoose;
   similarWyckPositions choosablePositions;
+  std::string toString() const {
+    std::string s;
+    s += "numToChoose: "; s += std::to_string(numToChoose); s += '\n';
+    for (int i = 0; i < choosablePositions.size(); ++i) {
+      const wyckPos &w = choosablePositions.at(i);
+      auto letter = std::get<0>(w); auto mul = std::get<1>(w);
+      auto pos = std::get<2>(w); auto unique = std::get<3>(w);
+      s += '('; s += letter; s += '\t';
+      s += std::to_string(mul); s += '\t';
+      s += pos; s += '\t';
+      if (unique) { s += "True"; } else {s += "False"; } s += ')';
+      s += '\n';
+    }
+    s += '\n';
+    return s;
+  }
 };
 
 typedef std::vector<similarWyckPosAndNumToChoose> assignments;
@@ -66,6 +82,16 @@ typedef std::vector<similarWyckPosAndNumToChoose> assignments;
 struct singleAtomPossibility {
   uint atomicNum;
   assignments assigns;
+  std::string toString() const {
+    std::string s;
+    s += "atomicNum: "; s += std::to_string(atomicNum); s += '\n';
+    for (int i = 0; i < assigns.size(); ++i) {
+      const similarWyckPosAndNumToChoose &b = assigns.at(i);
+      s += b.toString();
+    }
+    s += '\n';
+  return s;
+  }
 };
 
 // This represents all possible solutions of the system (for individual

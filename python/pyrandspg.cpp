@@ -2,9 +2,11 @@
 #include <pybind11/stl.h>
 #include <string>
 #include <iostream>
+#include <tuple>
 
 #include "crystal.h"
 #include "randSpg.h"
+#include "randSpgCombinatorics.h"
 
 namespace py = pybind11;
 
@@ -47,7 +49,17 @@ PYBIND11_MODULE(pyrandspg, m) {
       .def_readwrite("beta", &latticeStruct::beta,
                      "The beta angle in degrees")
       .def_readwrite("gamma", &latticeStruct::gamma,
-                     "The gamma angle in degrees");
+                     "The gamma angle in degrees")
+      .def("__repr__", [](latticeStruct &l) {
+           std::string s;
+           s += "    a: "; s += std::to_string(l.a); s += "\n";
+           s += "    b: "; s += std::to_string(l.b); s += "\n";
+           s += "    c: "; s += std::to_string(l.c); s += "\n";
+           s += "alpha: "; s += std::to_string(l.alpha); s += "\n";
+           s += " beta: "; s += std::to_string(l.beta); s += "\n";
+           s += "gamma: "; s += std::to_string(l.gamma);
+           return s;
+      });
 
   py::class_<Crystal>(m, "Crystal", "A crystal class that contains a list of "
                       "AtomStructs and a LatticeStruct.")
@@ -165,5 +177,53 @@ PYBIND11_MODULE(pyrandspg, m) {
                       "primary RandSpg procedures.")
       .def("randSpgCrystal", &RandSpg::randSpgCrystal, "Generate a random "
            "crystal with a specific space group and all other constraints "
-           "given in the input struct");
+           "given in the input struct")
+      .def("generateLatticeForSpg", &RandSpg::generateLatticeForSpg,
+           "Generates a latticeStruct with randomly generated parameters "
+           "for a given spacegroup, mins, and maxes")
+      .def("getNumOfEachType", &RandSpg::getNumOfEachType, "Gets number of "
+           "each atomic number")
+      .def("getWyckoffPositions", &RandSpg::getWyckoffPositions, "Gets "
+           "wyckoff positions for given space group")
+      .def("isSpgPossible", &RandSpg::isSpgPossible, "Used to determine if "
+           "a spacegroup is possible for a given set of atoms.");
+
+  py::class_<similarWyckPosAndNumToChoose>(m, "similarWyckPosAndNumToChoose",
+                                           "Static class provides a set of "
+                                           "choosable positions and how many "
+                                           "we are supposed to choose.")
+      .def_readwrite("numToChoose", &similarWyckPosAndNumToChoose::numToChoose,
+                     "Number of similar multiplicities and uniqueness wyckoff "
+                     "position to choose")
+      .def_readwrite("choosablePositions",
+                     &similarWyckPosAndNumToChoose::choosablePositions,
+                     "Chooseable wyckoff positions")
+      .def("__repr__", &similarWyckPosAndNumToChoose::toString, "Explicitly "
+      "printed out on screen");
+
+  py::class_<singleAtomPossibility>(m, "singleAtomPossibility", "Static class "
+                                    "provides assignments to produce a single "
+                                    "possibility for a given atomic number")
+      .def_readwrite("atomicNum", &singleAtomPossibility::atomicNum, "Target "
+                     "atomic number")
+      .def_readwrite("assigns", &singleAtomPossibility::assigns, "Assignments "
+                     "to produce a single possibility for given atomic number")
+      .def("__repr__", &singleAtomPossibility::toString, "Explicitly printed "
+           "out on screen");
+
+  py::class_<RandSpgCombinatorics>(m, "RandSpgCombinatorics", "Static method "
+                                   "class that return system possibilities "
+                                   "that satisfy the constraint given.")
+      .def("getSystemPossibilities",
+           &RandSpgCombinatorics::getSystemPossibilities,
+           // py::arg("spg") = 1, py::arg("atoms") = std::vector<uint>(),
+           // py::arg("findOnlyOne") = false, py::arg("findOnlyNonUnique") = false,
+           "Returns all system possibilities that satisfy the constraints "
+           "given by the spacegroup and input atoms")
+      .def("getRandomSystemPossibility",
+           &RandSpgCombinatorics::getRandomSystemPossibility, "Pick a random "
+           "system possibility from the system possibilities")
+      .def("getSimilarWyckPosAndNumToChooseString",
+           &RandSpgCombinatorics::getSimilarWyckPosAndNumToChooseString,
+          "Returns string representation of class similarWyckPosAndNumToChoos");
 }
