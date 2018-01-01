@@ -580,12 +580,12 @@ systemPossibility RandSpgCombinatorics::getRandomSystemPossibility(const systemP
 }
 
 // Get random atom assignments from all the possible system possibilities
-atomAssignments RandSpgCombinatorics::getRandomAtomAssignments(const systemPossibilities& sysPoss)
-{
-  // We will call the one with the "forcedWyckPositions" vector as an
-  // empty vector
-  return getRandomAtomAssignments(sysPoss, vector<pair<uint, wyckPos>>());
-}
+// atomAssignments RandSpgCombinatorics::getRandomAtomAssignments(const systemPossibilities& sysPoss)
+// {
+//   // We will call the one with the "forcedWyckPositions" vector as an
+//   // empty vector
+//   return getRandomAtomAssignments(sysPoss, vector<pair<uint, wyckPos>>());
+// }
 
 void decrementChoiceFromSystemPossibility(systemPossibility& sysPos, uint atomicNum, const wyckPos& wyckPos)
 {
@@ -720,7 +720,7 @@ string RandSpgCombinatorics::getVerbosePossibilitiesString(const systemPossibili
       s << "    For atomicNum: " << sinPos.atomicNum << "\n";
       for (size_t k = 0; k < sinPos.assigns.size(); k++) {
         const similarWyckPosAndNumToChoose& simPos = sinPos.assigns[k];
-        s << "      We will choose " << simPos.numToChoose 
+        s << "      We will choose " << simPos.numToChoose
           << " of the following positions:\n        { ";
         for (size_t l = 0; l < simPos.choosablePositions.size(); l++) {
           s << RandSpg::getWyckLet(simPos.choosablePositions[l]) << " ";

@@ -69,7 +69,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='pyrandspg',
-    version='0.0.1',
+    version='0.0.2',
     author='YunxingZuo',
     author_email='zuoyunxing@gmail.com',
     description='Python binding of RandSpg',

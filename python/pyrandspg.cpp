@@ -7,6 +7,7 @@
 #include "crystal.h"
 #include "randSpg.h"
 #include "randSpgCombinatorics.h"
+#include "wyckoffDatabase.h"
 
 namespace py = pybind11;
 
@@ -186,7 +187,9 @@ PYBIND11_MODULE(pyrandspg, m) {
       .def("getWyckoffPositions", &RandSpg::getWyckoffPositions, "Gets "
            "wyckoff positions for given space group")
       .def("isSpgPossible", &RandSpg::isSpgPossible, "Used to determine if "
-           "a spacegroup is possible for a given set of atoms.");
+           "a spacegroup is possible for a given set of atoms.")
+      .def("getAtomAssignmentsString", &RandSpg::getAtomAssignmentsString,
+           "Returns string of given AtomAssignment");
 
   py::class_<similarWyckPosAndNumToChoose>(m, "similarWyckPosAndNumToChoose",
                                            "Static class provides a set of "
@@ -197,9 +200,9 @@ PYBIND11_MODULE(pyrandspg, m) {
                      "position to choose")
       .def_readwrite("choosablePositions",
                      &similarWyckPosAndNumToChoose::choosablePositions,
-                     "Chooseable wyckoff positions")
-      .def("__repr__", &similarWyckPosAndNumToChoose::toString, "Explicitly "
-      "printed out on screen");
+                     "Chooseable wyckoff positions");
+      // .def("__repr__", &similarWyckPosAndNumToChoose::toString, "Explicitly "
+      // "printed out on screen");
 
   py::class_<singleAtomPossibility>(m, "singleAtomPossibility", "Static class "
                                     "provides assignments to produce a single "
@@ -207,9 +210,9 @@ PYBIND11_MODULE(pyrandspg, m) {
       .def_readwrite("atomicNum", &singleAtomPossibility::atomicNum, "Target "
                      "atomic number")
       .def_readwrite("assigns", &singleAtomPossibility::assigns, "Assignments "
-                     "to produce a single possibility for given atomic number")
-      .def("__repr__", &singleAtomPossibility::toString, "Explicitly printed "
-           "out on screen");
+                     "to produce a single possibility for given atomic number");
+      // .def("__repr__", &singleAtomPossibility::toString, "Explicitly printed "
+      //      "out on screen");
 
   py::class_<RandSpgCombinatorics>(m, "RandSpgCombinatorics", "Static method "
                                    "class that return system possibilities "
@@ -223,7 +226,7 @@ PYBIND11_MODULE(pyrandspg, m) {
       .def("getRandomSystemPossibility",
            &RandSpgCombinatorics::getRandomSystemPossibility, "Pick a random "
            "system possibility from the system possibilities")
-      .def("getSimilarWyckPosAndNumToChooseString",
-           &RandSpgCombinatorics::getSimilarWyckPosAndNumToChooseString,
-          "Returns string representation of class similarWyckPosAndNumToChoos");
+      .def("getRandomAtomAssignments",
+           &RandSpgCombinatorics::getRandomAtomAssignments, "Get a random set "
+           "of atom assignments from all the system possibilities");
 }
